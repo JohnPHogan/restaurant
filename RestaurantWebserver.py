@@ -30,16 +30,14 @@ class webserverHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                output = ""
-                output += "<html><body>"
-                output += "<h1>Make a New Restaurant</h1>"
-                output += "<form method = 'POST' enctype='multipart/formdata'"
-                output += " action = 'restaurants/new'>"
-                output += "<input name = 'newRestaurantname' type = 'text'"
-                output += " placeholder = 'New Restaurant Name'>"
-                output += "<input type='submit' value='Create'>"
-                output += "</form></body></html>"
-                print output
+                output = '''<html><body>
+                    <h1>Make a New Restaurant</h1>
+                    <form method = 'POST' enctype='multipart/formdata'
+                    action = 'restaurants/new'>
+                    <input name = 'newRestaurantname' type = 'text'
+                     placeholder = 'New Restaurant Name'>
+                      <input type='submit' value='Create'>
+                     </form></body></html>'''
                 self.wfile.write(output)
                 return
 
@@ -78,10 +76,10 @@ class webserverHandler(BaseHTTPRequestHandler):
             if self.path.endswith("restaurants/new"):
                 print "made it into the logic"
                 ctype, pdict = cgi.parse_header(
-                    self.headers.getheaders('Content-type')
+                    self.headers.getheader('content-type')
                 )
-                print ctype
-                if ctype == 'multipart/form-data':
+                print "ctype = %s" % ctype
+                if ctype == 'application/x-www-form-urlencoded':
                     fields = cgi.parse_multipart(self.rfile, pdict)
                     restaurant_name = fields.get('newRestaurantname')
                     print restaurant_name[0]
